@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Comic Image Viewer</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<style>
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    text-align: center;
+    margin: 20px;
+    background-image: url('https://source.unsplash.com/1600x900/?nature,watercolor'); /* A dynamic nature watercolor background */
+    background-size: cover;
+}
+
+/* Style for text boxes */
+.text-box {
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    border: 3px solid #009688; /* Teal border */
+    border-radius: 10px; /* Rounded corners */
+    padding: 10px;
+    margin: 10px auto;
+    max-width: 80%;
+    color: #333; /* Dark text for readability */
+}
+
+/* Additional styling if needed */
+</style>
+</head>
+<body>
+<h1>Comic Image Viewer</h1>
+<!-- 10 Input Forms -->
+<form class="imageForm">
+<label for="input1_1">Enter comic image prompt (page 1 ):</label>
+<input id="input1_1" name="input1_1" required="" type="text"/>
+<label for="input1_2">Enter bubble text: </label>
+<input id="input1_2" name="input1_2" required="" type="text"/>
+</form> <hr/>
+<form class="imageForm">
+<label for="input2_1">Enter comic image prompt (page 2 ):</label>
+<input id="input2_1" name="input2_1" required="" type="text"/>
+<label for="input2_2">Enter bubble text: </label>
+<input id="input2_2" name="input2_2" required="" type="text"/>
+</form> <hr/>
+<form class="imageForm">
+<!-- Repeat the form structure for 3 to 10 -->
+<label for="input3_1">Enter comic image prompt (page 3 ):</label>
+<input id="input3_1" name="input3_1" required="" type="text"/>
+<label for="input3_2">Enter bubble text: </label>
+<input id="input3_2" name="input3_2" required="" type="text"/>
+</form> <hr/>
+<form class="imageForm">
+<label for="input4_1">Enter comic image prompt (page 4 ):</label>
+<input id="input4_1" name="input4_1" required="" type="text"/>
+<label for="input4_2">Enter bubble text: </label>
+<input id="input4_2" name="input4_2" required="" type="text"/>
+</form> <hr/>
+<form class="imageForm">
+<label for="input5_1">Enter comic image prompt (page 5 ):</label>
+<input id="input5_1" name="input5_1" required="" type="text"/>
+<label for="input5_2">Enter bubble text: </label>
+<input id="input5_2" name="input5_2" required="" type="text"/>
+</form> <hr/>
+<form class="imageForm">
+<label for="input6_1">Enter comic image prompt (page 6 ):</label>
+<input id="input6_1" name="input6_1" required="" type="text"/>
+<label for="input6_2">Enter bubble text: </label>
+<input id="input6_2" name="input6_2" required="" type="text"/>
+</form> <hr/>
+<form class="imageForm">
+<label for="input7_1">Enter comic image prompt (page 7 ):</label>
+<input id="input7_1" name="input7_1" required="" type="text"/>
+<label for="input7_2">Enter bubble text: </label>
+<input id="input7_2" name="input7_2" required="" type="text"/>
+</form> <hr/>
+<form class="imageForm">
+<label for="input8_1">Enter comic image prompt (page 8 ):</label>
+<input id="input8_1" name="input8_1" required="" type="text"/>
+<label for="input8_2">Enter bubble text: </label>
+<input id="input8_2" name="input8_2" required="" type="text"/>
+</form> <hr/>
+<form class="imageForm">
+<label for="input9_1">Enter comic image prompt (page 9 ):</label>
+<input id="input9_1" name="input9_1" required="" type="text"/>
+<label for="input9_2">Enter bubble text: </label>
+<input id="input9_2" name="input9_2" required="" type="text"/>
+</form> <hr/>
+<form class="imageForm">
+<label for="input10_1">Enter comic image prompt (page 10) :</label>
+<input id="input10_1" name="input10_1" required="" type="text"/>
+<label for="input10_2">Enter bubble text: </label>
+<input id="input10_2" name="input10_2" required="" type="text"/>
+</form> <hr/>
+<button id="fetchButton" onclick="fetchAndDisplayImages()" type="button">Fetch Images</button><br/>
+    Please wait after clicking the fetch button, the API takes 2-3 mins time to generate the pictures.
+
+    <div id="imageContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); grid-gap: 10px;"></div>
+<script>
+async function query(data) {
+    const response = await fetch(
+        "https://xdwvg9no7pefghrn.us-east-1.aws.endpoints.huggingface.cloud",
+        {
+            headers: {
+                "Accept": "image/png",
+                "Authorization": "Bearer VknySbLLTUjbxXAXCjyfaFIPwUTCeRXbFSOjwRiCxsxFyhbnGjSFalPKrpvvDAaPVzWEevPljilLVDBiTzfIbWFdxOkYJxnOPoHhkkVGzAknaOulWggusSFewzpqsNWM",
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify(data),
+        }
+    );
+    const result = await response.blob();
+    return result;
+}
+
+async function fetchAndDisplayImages() {
+    const imageForms = document.querySelectorAll('.imageForm');
+    const imageContainer = document.getElementById('imageContainer');
+    const fetchButton = document.getElementById('fetchButton');
+    // Clear previous images
+    imageContainer.innerHTML = '';
+
+    fetchButton.innerHTML = 'Fetching... <i class="fa fa-spinner fa-spin"></i>';
+
+    // Loop through each form
+    for (const form of imageForms) {
+        // Get the input values for each form
+        const input1 = form.querySelector('input[name$="_1"]').value;
+        const prompt_for_text_bubble = ". Add the text bubble saying - "
+        const input2 = form.querySelector('input[name$="_2"]').value;
+
+        try {
+            // Concatenate input values
+            const keyword = `${input1} ${prompt_for_text_bubble}  " ${input2} " `;
+
+            // Make API request for each form
+            const blobResult = await query({ "inputs": keyword });
+
+            // Display the image
+            displayImage(blobResult);
+        } catch (error) {
+            console.error(`Error for form with inputs ${input1}, ${input2}:`, error);
+        }
+    }
+
+    // Change the button color after pressing it
+    document.getElementById('fetchButton').classList.add('clicked');
+}
+
+function displayImage(blob) {
+    const imageContainer = document.getElementById('imageContainer');
+
+    // Create new image element
+    const image = document.createElement('img');
+    image.src = URL.createObjectURL(blob);
+
+    // Append the image to the container
+    imageContainer.appendChild(image);
+  
+}
+fetchButton.classList.add('clicked');
+// Remove loading icon after fetching
+fetchButton.innerHTML = 'Fetch Images';
+</script>
+<input accept="image/*" id="imageUpload" onchange="displayUploadedImg()" type="file"/><br/><img id="uploadedImg" style="width: 100%; height: auto; max-width: 100%; margin-top: 20px; display: block;"/>
+<script>
+    function displayUploadedImg() {
+        var input = document.getElementById('imageUpload');
+        var uploadedImg = document.getElementById('uploadedImg');
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImg.src = e.target.result;
+                uploadedImg.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+</body>
+</html>
